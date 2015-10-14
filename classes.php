@@ -1,5 +1,5 @@
 <?php
-
+  
 class classFileSystem {
 
     // list all files specified, and also remove invalid characters on filename
