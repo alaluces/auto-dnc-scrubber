@@ -1,7 +1,6 @@
 <?php
   
 class classFileSystem {
-
     // list all files specified, and also remove invalid characters on filename
     function getFileList($dir) {       
         $files = array();
@@ -43,12 +42,8 @@ class classFileSystem {
             fputs($wFile,"$sPhoneNumber\r\n");
         }
         fclose($wFile);       
-    }
-    
-    
-    
+    }   
 }
-
 
 class classDnc {
     
@@ -137,8 +132,4 @@ class classDnc {
         $STH->execute(); 
         return $STH->fetchAll(PDO::FETCH_COLUMN, 0);       
     }    
-    
-    
-    
-    
 }

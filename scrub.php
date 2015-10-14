@@ -18,11 +18,12 @@ $ipAddress = array(
     '10.0.0.1',
     '10.0.0.2',
     '10.0.0.3'
+
 ); 
 
 $cwd = array(
     '/shared/qub/scrubber',
-    '/shared/infin8/scrubber',
+    '/shared/iconcept/scrubber',
     '/shared/public/scrubber'
 );
 
