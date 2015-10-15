@@ -30,6 +30,7 @@ class classFileSystem {
         if (!file_exists("$cwd")) { mkdir("$cwd", 0777); }
         if (!file_exists("$cwd/scrubbed")) { mkdir("$cwd/scrubbed", 0777); }
         if (!file_exists("$cwd/original")) { mkdir("$cwd/original", 0777); } 
+        if (!file_exists("$cwd/reports")) { mkdir("$cwd/reports", 0777); } 
         umask($oldmask);
     }
     
@@ -42,7 +43,18 @@ class classFileSystem {
             fputs($wFile,"$sPhoneNumber\r\n");
         }
         fclose($wFile);       
-    }   
+    }  
+    
+    function generateReport($report, $path) {
+        $reportDate = date("Ymd-His");
+        $fileName   = "$path/reports/$reportDate.csv";        
+        $wFile      = fopen($fileName,"w"); 
+        fputs($wFile,"FILENAME , CLEAN , FEDERAL DNC , CAMPAIGN DNC , ZIP CODE DNC , TOTAL\r\n");        
+        for($i = 0; $i < count($report); $i++){            
+            fputs($wFile, implode(",",$report[$i]) . "\r\n");                  
+        }
+        fclose($wFile);       
+    }    
 }
 
 class classDnc {
@@ -131,5 +143,22 @@ class classDnc {
         $STH->bindParam(':ipAddress', $ipAddress); 
         $STH->execute(); 
         return $STH->fetchAll(PDO::FETCH_COLUMN, 0);       
+    }   
+    
+    public function getReport($ipAddress) 
+    {           
+        $STH = $this->DBH->prepare("SELECT 
+            filename,
+            SUM(lead_status = 'CLEAN'),
+            SUM(lead_status = 'FEDERAL'),
+            SUM(lead_status = 'CAMPAIGN'),
+            SUM(lead_status = 'ZIP'),
+            COUNT(*)
+            FROM temp_scrub_leads2
+            WHERE ip_address = :ipAddress
+            GROUP BY filename");       
+        $STH->bindParam(':ipAddress', $ipAddress); 
+        $STH->execute(); 
+        return $STH->fetchAll(PDO::FETCH_NUM);       
     }    
 }

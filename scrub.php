@@ -15,16 +15,16 @@ $dnc = new classDnc($DBH);
 $fs  = new classFileSystem();
 
 $ipAddress = array(
-    '10.0.0.1',
+    '10.0.0.1',        
     '10.0.0.2',
     '10.0.0.3'
 
 ); 
 
 $cwd = array(
-    '/shared/qub/scrubber',
+    '/shared/public/scrubber',
     '/shared/iconcept/scrubber',
-    '/shared/public/scrubber'
+    '/shared/qub/scrubber'
 );
 
 
@@ -66,7 +66,12 @@ for($n = 0; $n < count($ipAddress); $n++){
         $baseName = basename($csvList[$i]);    
         $phoneNumbers = $dnc->getCleanNumbers($ipAddress[$n], $baseName);
         $fs->saveFile($phoneNumbers, $csvList[$i]);
-    } 
-}
-
+    }
     
+    // generate report logs
+    $report = $dnc->getReport($ipAddress[$n]);
+    if ($report) {
+        $fs->generateReport($report, $cwd[$n]);
+    }
+    
+}
