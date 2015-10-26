@@ -27,12 +27,16 @@ $cwd = array(
     '/shared/qub/scrubber'
 );
 
+// Remove all the previous uploaded list first
+for($n = 0; $n < count($ipAddress); $n++){
+    $dnc->deleteLeads($ipAddress[$n]);
+}    
 
 for($n = 0; $n < count($ipAddress); $n++){    
     // Rebuild the directory structure if somebody deleted them
     $fs->rebuildDirectory($cwd[$n]);
     echo "Processing folder $cwd[$n]\n";
-    // convert xlsx files to csv if needed
+    // convert xlsx files to csv if needed            
     $xlsxList = $fs->getFileList("$cwd[$n]/*.xlsx");
     if (count($xlsxList) > 0){
         for($i=0; $i < count($xlsxList);$i++){  
@@ -44,8 +48,6 @@ for($n = 0; $n < count($ipAddress); $n++){
 
     if (count($csvList) <= 0){ continue; }
     
-    $dnc->deleteLeads($ipAddress[$n]);
-
     // Load all the files to database
     for($i = 0; $i < count($csvList); $i++){    
         $baseName = basename($csvList[$i]); 
